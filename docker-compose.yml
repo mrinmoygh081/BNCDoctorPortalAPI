@@ -1,0 +1,13 @@
+version: '3.3'
+
+services:
+  api:
+    build: .
+    ports:
+      ['4000:3000']
+    volumes:
+      - .:/user/src/app
+    environment:
+      PORT: 3000
+      NAME: test
+      DATABASE_URL: "mysql://tempncfuser:HU7XCFG6D@59.98.79.72:3306/qa_db?connection_limit=1025"

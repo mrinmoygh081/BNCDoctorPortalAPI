@@ -1,0 +1,22 @@
+service: setupfile
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  region: ap-south-1
+  runtime: nodejs14.x
+  versionFunctions: false
+  timeout: 600
+  logRetentionInDays: 1
+
+functions:
+  LambdaFunction:
+    handler: handler.LambdaFunction
+   events:
+     - http : ANY /{proxy+}
+     - http : ANY /
+   environment :
+      DATABASE_URL: "mysql://tempncfuser:HU7XCFG6D@59.98.79.72:3306/qa_db?connection_limit=1025"
+      PSG_DATABASE_URL: "postgresql://postgres:postgres@10.132.100.171:5432/postgres?connection_limit=10250"
+      PORT: 4000

@@ -1,0 +1,73 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model appointments {
+  appointment_id Int      @id @default(autoincrement())
+  p_id           Int
+  booking_date   DateTime @db.DateTime(0)
+  datetime       DateTime @default(now()) @db.DateTime(0)
+
+  @@index([p_id], map: "p_id")
+}
+
+model patients {
+  p_id       Int    @id @default(autoincrement())
+  patient_id String @db.VarChar(25)
+  name       String @db.VarChar(55)
+  phone      String @db.VarChar(13)
+  age        String @db.VarChar(3)
+  sex        String @db.VarChar(12)
+  address    String @db.VarChar(255)
+}
+
+model familyhistory {
+  familyhistory_id Int    @id @default(autoincrement())
+  p_id             Int
+  p_infective      String @db.VarChar(45)
+  p_noninfective   String @db.VarChar(45)
+  p_surgical       String @db.VarChar(45)
+  p_obs_gynae      String @db.VarChar(45)
+  p_parity         String @db.VarChar(45)
+  m_infective      String @db.VarChar(45)
+  m_noninfective   String @db.VarChar(45)
+  m_surgical       String @db.VarChar(45)
+  m_obs_gynae      String @db.VarChar(45)
+  m_parity         String @db.VarChar(45)
+}
+
+model generalities {
+  generalities_id Int    @id @default(autoincrement())
+  p_id            Int
+  sweat           String @db.VarChar(45)
+  skin            String @db.VarChar(55)
+  teeth_gum       String @db.VarChar(55)
+  tongue          String @db.VarChar(55)
+  mental          String @db.VarChar(55)
+  thirst          String @db.VarChar(55)
+  dreams          String @db.VarChar(55)
+}
+
+model personalhistory {
+  personalhistory_id Int    @id @default(autoincrement())
+  p_id               Int
+  infective_history  String @db.VarChar(255)
+  injuries           String @db.VarChar(55)
+  vaccination        String @db.VarChar(55)
+  surgical           String @db.VarChar(55)
+  addiction          String @db.VarChar(35)
+  marital_status     String @db.VarChar(15)
+  num_child          String @db.VarChar(2)
+}
+
+model cravings {
+  craving_id Int    @id @default(autoincrement())
+  p_id       Int
+  cravings   String @db.VarChar(255)
+}

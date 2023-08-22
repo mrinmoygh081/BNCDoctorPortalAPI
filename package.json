@@ -1,0 +1,39 @@
+{
+  "name": "setupfile",
+  "version": "1.0.0",
+  "description": "node js file setup",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "deploy": "serverless deploy",
+    "start:dev": "sudo serverless offline --noTimeout",
+    "dev": "set NODE_ENV=dev& nodemon server.js",
+    "prod": "set NODE_ENV=prod& node server.js"
+  },
+  "author": "Somnath",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^4.14.1",
+    "axios": "^1.2.3",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^7.0.0",
+    "elasticsearch": "^16.7.3",
+    "express": "^4.18.2",
+    "firebase-admin": "^11.8.0",
+    "form-data": "^4.0.0",
+    "helmet": "^3.23.3",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.4.0",
+    "morgan": "^1.9.1",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^2.0.22",
+    "prisma": "^4.14.1",
+    "serverless-http": "^3.2.0"
+  },
+  "devDependencies": {
+    "serverless-dotenv-plugin": "^4.0.2",
+    "serverless-offline": "^10.3.2"
+  }
+}
