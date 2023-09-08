@@ -71,3 +71,28 @@ model cravings {
   p_id       Int
   cravings   String @db.VarChar(255)
 }
+
+model users {
+  user_id  Int    @id @default(autoincrement())
+  username String @db.VarChar(20)
+  password String @db.VarChar(255)
+  fullname String @db.VarChar(55)
+}
+
+model casehistory {
+  ch_id   Int    @id @default(autoincrement())
+  p_id    Int
+  date    String @db.VarChar(65)
+  system  String @db.VarChar(45)
+  image   String @db.VarChar(155)
+  remarks String @db.VarChar(255)
+}
+
+model casereporing {
+  cr_id   Int      @id @default(autoincrement())
+  p_id    Int
+  date    DateTime @db.DateTime(0)
+  system  String   @db.VarChar(45)
+  image   String   @db.VarChar(155)
+  remarks String   @db.VarChar(255)
+}

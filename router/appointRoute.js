@@ -12,6 +12,7 @@ const {
   addCravings,
   getGeneralities,
   addGeneralities,
+  addCaseHistory,
 } = require("../controllers/appointments/appointments");
 
 router.post("/", getAppoints);
@@ -25,5 +26,6 @@ router.post("/getCravings", getCravings);
 router.post("/addCravings", addCravings);
 router.post("/getGeneralities", getGeneralities);
 router.post("/addGeneralities", addGeneralities);
+router.post("/addCaseHistory", addCaseHistory);
 
 module.exports = router;

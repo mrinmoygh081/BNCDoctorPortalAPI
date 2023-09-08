@@ -1,6 +1,17 @@
+const { resSend } = require("../helper/resSend");
 const responseToClient = require("./../helper/response");
-const errorHandler = async (error, request, response, next)=>{
-    return response.status(400).json({msg: "Something Error", error:error.message});
-}
+const errorHandler = async (error, request, response, next) => {
+  if (error.code === "LIMIT_FILE_SIZE") {
+    return resSend(
+      response,
+      false,
+      200,
+      "File size should be below 1MB!",
+      null,
+      null
+    );
+  }
+  return resSend(response, false, 200, error.message, null, null);
+};
 
 module.exports = errorHandler;

@@ -5,7 +5,7 @@ const { tryCatch } = require("../../utils/tryCatch");
 const prismaConnector = require("../../prisma/prismaConnector");
 const { resSend } = require("../../helper/resSend");
 
-// POST -> /api/v1/appointments
+// POST -> /api/v1/appointments/appointments
 exports.getAppoints = async (req, res) => {
   const { booking_date } = req.body;
   console.log(booking_date);
@@ -20,7 +20,7 @@ exports.getAppoints = async (req, res) => {
   resSend(res, true, 200, "Appointments List!", result, null);
 };
 
-// POST -> /api/v1/appointments/new
+// POST -> /api/v1/appointments/appointments/new
 exports.addAppointsNew = async (req, res) => {
   const { booking_date, patient_id, name, phone, age, sex, address } = req.body;
 
@@ -69,7 +69,7 @@ exports.addAppointsNew = async (req, res) => {
   }
 };
 
-// POST -> /api/v1/appointments/old
+// POST -> /api/v1/appointments/appointments/old
 exports.addAppointsOld = async (req, res) => {
   const { booking_date, patient_id } = req.body;
 
@@ -105,7 +105,7 @@ exports.addAppointsOld = async (req, res) => {
   }
 };
 
-// POST -> /api/v1/getFamilyHistory
+// POST -> /api/v1/appointments/getFamilyHistory
 exports.getFamilyHistory = async (req, res) => {
   const { p_id } = req.body;
 
@@ -128,7 +128,7 @@ exports.getFamilyHistory = async (req, res) => {
   }
 };
 
-// POST -> /api/v1/addFamilyHistory/
+// POST -> /api/v1/appointments/addFamilyHistory/
 exports.addFamilyHistory = async (req, res) => {
   const {
     p_id,
@@ -191,7 +191,7 @@ exports.addFamilyHistory = async (req, res) => {
   }
 };
 
-// POST -> /api/v1/getPersonalHistory
+// POST -> /api/v1/appointments/getPersonalHistory
 exports.getPersonalHistory = async (req, res) => {
   const { p_id } = req.body;
 
@@ -214,7 +214,7 @@ exports.getPersonalHistory = async (req, res) => {
   }
 };
 
-// POST -> /api/v1/addPersonalHistory/
+// POST -> /api/v1/appointments/addPersonalHistory/
 exports.addPersonalHistory = async (req, res) => {
   const {
     p_id,
@@ -268,7 +268,7 @@ exports.addPersonalHistory = async (req, res) => {
   }
 };
 
-// POST -> /api/v1/getCravings
+// POST -> /api/v1/appointments/getCravings
 exports.getCravings = async (req, res) => {
   const { p_id } = req.body;
 
@@ -284,7 +284,7 @@ exports.getCravings = async (req, res) => {
   }
 };
 
-// POST -> /api/v1/addCravings
+// POST -> /api/v1/appointments/addCravings
 exports.addCravings = async (req, res) => {
   const { p_id, cravings } = req.body;
 
@@ -310,7 +310,7 @@ exports.addCravings = async (req, res) => {
   }
 };
 
-// POST -> /api/v1/getGeneralities
+// POST -> /api/v1/appointments/getGeneralities
 exports.getGeneralities = async (req, res) => {
   const { p_id } = req.body;
 
@@ -333,7 +333,7 @@ exports.getGeneralities = async (req, res) => {
   }
 };
 
-// POST -> /api/v1/addGeneralities
+// POST -> /api/v1/appointments/addGeneralities
 exports.addGeneralities = async (req, res) => {
   const { p_id, sweat, skin, teeth_gum, tongue, mental, thirst, dreams } =
     req.body;
@@ -369,5 +369,37 @@ exports.addGeneralities = async (req, res) => {
       },
     });
     resSend(res, true, 200, "Patient Generalities Add!", result, null);
+  }
+};
+
+// POST -> /api/v1/appointments/addCaseHistory
+exports.addCaseHistory = async (req, res) => {
+  const { p_id, date, system, image, remarks } = req.body;
+
+  let sql = `SELECT * FROM casehistory WHERE p_id= '${p_id}'`;
+  let caseHis = await prismaConnector.$queryRawUnsafe(sql);
+
+  if (caseHis && caseHis.length > 0) {
+    // Case History Updated
+    let sql = `UPDATE casehistory SET
+      date='${date}',
+      system='${system}',
+      image='${image}',
+      remarks='${remarks}'
+      WHERE p_id= '${p_id}'`;
+    let caseHis = await prismaConnector.$queryRawUnsafe(sql);
+    resSend(res, true, 200, "Case History Updated!", caseHis, null);
+  } else {
+    // Case History Add for the first time
+    const result = await prismaConnector.casehistory.create({
+      data: {
+        p_id,
+        date,
+        system,
+        image,
+        remarks,
+      },
+    });
+    resSend(res, true, 200, "Case History Added!", result, null);
   }
 };
