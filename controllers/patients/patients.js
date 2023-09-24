@@ -21,7 +21,7 @@ exports.getPatientsById = async (req, res, next) => {
     t2.p_infective, t2.p_noninfective, t2.p_surgical, t2.p_obs_gynae, t2.p_parity, t2.m_infective, t2.m_noninfective, t2.m_surgical, t2.m_obs_gynae, t2.m_parity,
     t3.infective_history, t3.injuries, t3.vaccination, t3.surgical, t3.addiction, t3.marital_status, t3.num_child,
     t4.cravings,
-    t5.sweat, t5.skin, t5.teeth_gum, t5.tongue, t5.mental, t5.thirst, t5.dreams,
+    t5.sweat, t5.skin, t5.teeth_gum, t5.tongue, t5.mental, t5.thirst, t5.dreams, t5.thermal,
     t6.date as ch_date, t6.system as ch_system, t6.image as ch_image, t6.remarks as ch_remarks
     FROM patients as t1 
     LEFT JOIN familyhistory as t2 ON t1.p_id = t2.p_id
@@ -68,4 +68,22 @@ exports.deleteReporting = async (req, res) => {
     `DELETE FROM casereporing WHERE cr_id = ${cr_id}`
   );
   resSend(res, true, 200, "The item is deleted!", result, null);
+};
+
+// POST -> /api/v1/patients/editPatientId
+exports.editPatientId = async (req, res) => {
+  const { p_id, new_patient_id } = req.body;
+
+  // Check new Patient Id is already in the database
+  const result = await prismaConnector.$queryRawUnsafe(
+    `SELECT * FROM patients WHERE patient_id = '${new_patient_id}'`
+  );
+  if (result.length > 0) {
+    resSend(res, false, 200, "Patient Id is already Assigned!", result, null);
+  } else {
+    const response = await prismaConnector.$queryRawUnsafe(
+      `UPDATE patients SET patient_id = '${new_patient_id}' WHERE p_id = '${p_id}'`
+    );
+    resSend(res, true, 200, "Patient id updated successfully!", response, null);
+  }
 };

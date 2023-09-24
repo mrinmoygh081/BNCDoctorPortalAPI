@@ -8,10 +8,9 @@ const { resSend } = require("../../helper/resSend");
 // POST -> /api/v1/appointments/appointments
 exports.getAppoints = async (req, res) => {
   const { booking_date } = req.body;
-  console.log(booking_date);
 
   let sql = `
-            SELECT t2.p_id, t2.patient_id,t1.appointment_id, t1.booking_date, t2.name, t2.phone, t2.age, t2.sex, t2.address
+            SELECT t2.p_id, t2.patient_id,t1.appointment_id, t1.booking_date, t2.name, t2.phone, t2.age, t2.sex, t2.address, t2.appointment_type
             FROM appointments as t1 
             INNER JOIN patients as t2 ON t1.p_id = t2.p_id
             WHERE LEFT(t1.booking_date, 10) = '${booking_date}'
@@ -22,7 +21,16 @@ exports.getAppoints = async (req, res) => {
 
 // POST -> /api/v1/appointments/appointments/new
 exports.addAppointsNew = async (req, res) => {
-  const { booking_date, patient_id, name, phone, age, sex, address } = req.body;
+  const {
+    booking_date,
+    patient_id,
+    name,
+    phone,
+    age,
+    sex,
+    address,
+    appointment_type,
+  } = req.body;
 
   let sql = `SELECT * FROM patients WHERE patient_id= '${patient_id}'`;
   let patientArr = await prismaConnector.$queryRawUnsafe(sql);
@@ -48,6 +56,7 @@ exports.addAppointsNew = async (req, res) => {
         age: age,
         sex: sex,
         address: address,
+        appointment_type: appointment_type,
       },
     });
     if (result) {
@@ -335,8 +344,17 @@ exports.getGeneralities = async (req, res) => {
 
 // POST -> /api/v1/appointments/addGeneralities
 exports.addGeneralities = async (req, res) => {
-  const { p_id, sweat, skin, teeth_gum, tongue, mental, thirst, dreams } =
-    req.body;
+  const {
+    p_id,
+    sweat,
+    skin,
+    teeth_gum,
+    tongue,
+    mental,
+    thirst,
+    dreams,
+    thermal,
+  } = req.body;
 
   let sql = `SELECT * FROM generalities WHERE p_id= '${p_id}'`;
   let patientArr = await prismaConnector.$queryRawUnsafe(sql);
@@ -350,7 +368,8 @@ exports.addGeneralities = async (req, res) => {
       tongue='${tongue}',
       mental='${mental}',
       thirst='${thirst}',
-      dreams='${dreams}'
+      dreams='${dreams}',
+      thermal='${thermal}'
      WHERE p_id= '${p_id}'`;
     let patientArr = await prismaConnector.$queryRawUnsafe(sql);
     resSend(res, true, 200, "Patient Generalities Updated!", patientArr, null);
@@ -366,6 +385,7 @@ exports.addGeneralities = async (req, res) => {
         mental,
         thirst,
         dreams,
+        thermal,
       },
     });
     resSend(res, true, 200, "Patient Generalities Add!", result, null);

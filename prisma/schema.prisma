@@ -11,20 +11,21 @@ datasource db {
 model appointments {
   appointment_id Int      @id @default(autoincrement())
   p_id           Int
-  booking_date   DateTime @db.DateTime(0)
+  booking_date   String   @db.VarChar(55)
   datetime       DateTime @default(now()) @db.DateTime(0)
 
   @@index([p_id], map: "p_id")
 }
 
 model patients {
-  p_id       Int    @id @default(autoincrement())
-  patient_id String @db.VarChar(25)
-  name       String @db.VarChar(55)
-  phone      String @db.VarChar(13)
-  age        String @db.VarChar(3)
-  sex        String @db.VarChar(12)
-  address    String @db.VarChar(255)
+  p_id             Int    @id @default(autoincrement())
+  patient_id       String @db.VarChar(25)
+  name             String @db.VarChar(55)
+  phone            String @db.VarChar(13)
+  age              String @db.VarChar(3)
+  sex              String @db.VarChar(12)
+  address          String @db.VarChar(255)
+  appointment_type String @db.VarChar(55)
 }
 
 model familyhistory {
@@ -52,6 +53,7 @@ model generalities {
   mental          String @db.VarChar(55)
   thirst          String @db.VarChar(55)
   dreams          String @db.VarChar(55)
+  thermal         String @db.VarChar(55)
 }
 
 model personalhistory {
