@@ -17,7 +17,7 @@ exports.getPatients = async (req, res, next) => {
 exports.getPatientsById = async (req, res, next) => {
   let { id } = req.params;
   const result = await prismaConnector.$queryRawUnsafe(
-    `SELECT t1.p_id, t1.patient_id, t1.name, t1.phone, t1.age, t1.sex, t1.address,
+    `SELECT t1.p_id, t1.patient_id, t1.name, t1.phone, t1.age, t1.sex, t1.address, t1.appointment_type,
     t2.p_infective, t2.p_noninfective, t2.p_surgical, t2.p_obs_gynae, t2.p_parity, t2.m_infective, t2.m_noninfective, t2.m_surgical, t2.m_obs_gynae, t2.m_parity,
     t3.infective_history, t3.injuries, t3.vaccination, t3.surgical, t3.addiction, t3.marital_status, t3.num_child,
     t4.cravings,
@@ -46,19 +46,50 @@ exports.getReportings = async (req, res, next) => {
 // POST -> /api/v1/patients/addReporting
 exports.addReporting = async (req, res) => {
   const { p_id, date, system, image, remarks } = req.body;
-  console.log(p_id, date, system, image, remarks);
 
-  // Case Reporting Add for the first time
-  const result = await prismaConnector.casereporing.create({
-    data: {
-      p_id,
-      date,
-      system,
-      image,
-      remarks,
-    },
-  });
-  resSend(res, true, 200, "Case Reporting Added!", result, null);
+  if (p_id) {
+    // Case Reporting Add for the first time
+    const result = await prismaConnector.casereporing.create({
+      data: {
+        p_id,
+        date,
+        system,
+        image,
+        remarks,
+      },
+    });
+    resSend(res, true, 200, "Case Reporting Added!", result, null);
+  } else {
+    resSend(res, false, 200, "p_id is missing!", null, null);
+  }
+};
+
+exports.editReporting = async (req, res) => {
+  const { cr_id, date, system, image, remarks } = req.body;
+  // Check new Patient Id is already in the database
+  const result = await prismaConnector.$queryRawUnsafe(
+    `SELECT * FROM casereporing WHERE cr_id = '${cr_id}'`
+  );
+  if (result.length > 0) {
+    const response = await prismaConnector.$queryRawUnsafe(
+      `UPDATE casereporing 
+    SET date = '${date}', 
+    system = '${system}', 
+    image = '${image}', 
+    remarks = '${remarks}'
+    WHERE cr_id = '${cr_id}'`
+    );
+    resSend(
+      res,
+      true,
+      200,
+      "Case Reporting updated successfully!",
+      response,
+      null
+    );
+  } else {
+    resSend(res, false, 200, "Case Reporting not found!", result, null);
+  }
 };
 
 // POST -> /api/v1/patients/deleteReporting
@@ -85,5 +116,37 @@ exports.editPatientId = async (req, res) => {
       `UPDATE patients SET patient_id = '${new_patient_id}' WHERE p_id = '${p_id}'`
     );
     resSend(res, true, 200, "Patient id updated successfully!", response, null);
+  }
+};
+
+// POST -> /api/v1/patients/editPatientInfo
+exports.editPatientInfo = async (req, res) => {
+  const { p_id, name, phone, sex, age, address, appointment_type } = req.body;
+
+  // Check new Patient Id is already in the database
+  const result = await prismaConnector.$queryRawUnsafe(
+    `SELECT * FROM patients WHERE p_id = '${p_id}'`
+  );
+  if (result.length > 0) {
+    const response = await prismaConnector.$queryRawUnsafe(
+      `UPDATE patients 
+      SET name = '${name}', 
+      phone = '${phone}', 
+      sex = '${sex}', 
+      age = '${age}', 
+      address = '${address}', 
+      appointment_type = '${appointment_type}' 
+      WHERE p_id = '${p_id}'`
+    );
+    resSend(
+      res,
+      true,
+      200,
+      "Patient Info updated successfully!",
+      response,
+      null
+    );
+  } else {
+    resSend(res, false, 200, "Patient not found!", result, null);
   }
 };

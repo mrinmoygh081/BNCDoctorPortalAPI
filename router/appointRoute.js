@@ -13,11 +13,13 @@ const {
   getGeneralities,
   addGeneralities,
   addCaseHistory,
+  deleteAppoints,
 } = require("../controllers/appointments/appointments");
 
 router.post("/", getAppoints);
 router.post("/new", addAppointsNew);
 router.post("/old", addAppointsOld);
+router.post("/delete", deleteAppoints);
 router.post("/getFamilyHistory", getFamilyHistory);
 router.post("/addFamilyHistory", addFamilyHistory);
 router.post("/getPersonalHistory", getPersonalHistory);

@@ -114,6 +114,26 @@ exports.addAppointsOld = async (req, res) => {
   }
 };
 
+// POST -> /api/v1/appointments/delete
+exports.deleteAppoints = async (req, res) => {
+  const { appointment_id } = req.body;
+
+  let sql = `DELETE FROM appointments WHERE appointment_id=${appointment_id}`;
+  try {
+    const result = await prismaConnector.$queryRawUnsafe(sql);
+    resSend(
+      res,
+      true,
+      200,
+      "The appointment is deleted successfully!",
+      result,
+      null
+    );
+  } catch (error) {
+    resSend(res, false, 200, "Something went wrong!", error, null);
+  }
+};
+
 // POST -> /api/v1/appointments/getFamilyHistory
 exports.getFamilyHistory = async (req, res) => {
   const { p_id } = req.body;
